@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
-import './dashboard.css';
+import './transaction.css';
 import { NavLink } from 'react-router-dom';
 import { transaction } from '../../service/TransactionService';
 import Navigation from "../common/navbar";
-
-
 export default class index extends PureComponent {
   constructor(props) {
     super(props);
@@ -28,11 +26,12 @@ export default class index extends PureComponent {
         <MuiThemeProvider>
           <div>
             <AppBar
-              title="Dashboard"
+              title="Transaction History"
             />
           </div>
           <Navigation/>
-          <div className="flexDiv">
+         
+          <div className="transactionDiv">
             <div>
               <h4>Total Amount</h4>
               <p>30</p>
