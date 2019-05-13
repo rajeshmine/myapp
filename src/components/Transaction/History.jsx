@@ -34,7 +34,7 @@ export default class index extends PureComponent {
     if (transactionhistory.data) {
       let transactions = transactionhistory.data.message;
       console.log(transactions)
-      transactions = await transactions.filter(v => (+v.sender) === mobile || (+v.recipient) === mobile)
+      transactions = await transactions.filter(v => (+v.sender) === +mobile || (+v.recipient) === +mobile)
       await this.setState({ transactions })
     }
 
@@ -42,7 +42,7 @@ export default class index extends PureComponent {
 
   render() {
     const { transactions, user: { mobile } } = this.state
-    console.log(mobile)
+    console.log(transactions)
     return (
       <div>
         <MuiThemeProvider>
@@ -58,7 +58,7 @@ export default class index extends PureComponent {
               <div>
                 <h4>Sender: {v.sender}</h4>
                 <h4>Recipient : {v.recipient}</h4>
-                <p>Amount: {+v.sender === mobile ? '-' + v.amount : '+' + v.amount}</p>
+                <p>Amount: {+v.sender === +mobile ? '-' + v.amount : '+' + v.amount}</p>
               </div>
             )}
 
