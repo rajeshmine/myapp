@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
 import Navigation from "../common/navbar";
 
+import { getuser } from '../../service/jwtdecode';
 import RaisedButton from 'material-ui/RaisedButton';
 export default class index extends PureComponent {
   constructor(props) {
@@ -21,11 +22,15 @@ export default class index extends PureComponent {
   }
   componentDidMount() {
     this.init();
+
   }
 
   init = async () => {
-
+    let getuserData = await getuser();
+    await this.setState({ user: getuserData.data })
+    console.log(this.state)
   }
+
 
   _onSelect = async (i) => {
     const { users } = this.state;
@@ -37,7 +42,7 @@ export default class index extends PureComponent {
   SendMoney = () => {
 
   }
-  
+
 
   render() {
     const { users, selected } = this.state;

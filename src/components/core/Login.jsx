@@ -5,6 +5,7 @@ import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import { checkuser } from '../../service/LoginService';
+import { NavLink } from 'react-router-dom';
 
 import './Login.css'
 export default class Login extends PureComponent {
@@ -21,8 +22,10 @@ export default class Login extends PureComponent {
         if ((mobile !== '') && (password !== '')) {
             try {
                 let r = await checkuser(this.state);
-                if (r.data.data)
+                if (r.data.data) {
+                    localStorage.setItem("token", r.data.token);
                     await this.props.history.push('/dashboard')
+                }
             } catch (err) {
                 alert("Check Credentials")
             }
@@ -56,6 +59,10 @@ export default class Login extends PureComponent {
                         />
                         <br />
                         <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.handleClick(event)} />
+                        <br />
+
+                        <NavLink to='/signup'>Signup</NavLink>
+
                     </div>
                 </MuiThemeProvider>
             </div>

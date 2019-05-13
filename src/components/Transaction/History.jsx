@@ -5,6 +5,8 @@ import './transaction.css';
 import { NavLink } from 'react-router-dom';
 import { transaction } from '../../service/TransactionService';
 import Navigation from "../common/navbar";
+
+import { getuser } from '../../service/jwtdecode';
 export default class index extends PureComponent {
   constructor(props) {
     super(props);
@@ -14,10 +16,17 @@ export default class index extends PureComponent {
   }
   componentDidMount() {
     this.init();
+
   }
 
   init = async () => {
+    let getuserData = await getuser();
+    await this.setState({ user: getuserData.data })
+    console.log(this.state)
+  }
 
+  transactionHistory = async () => {
+    
   }
 
   render() {
