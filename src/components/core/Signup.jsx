@@ -25,8 +25,8 @@ export default class Login extends PureComponent {
             if (password === confirmpassword) {
                 try{
                     let r = await signup(this.state)
-                    if (r.data.data){
-                        console.log(r.data.data)
+                    if (r.data.message){
+                        console.log(r.data.message)
                         await this.props.history.push('/login')
                     }
                    

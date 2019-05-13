@@ -7,7 +7,7 @@ import AppBar from 'material-ui/AppBar';
 import './transaction.css';
 import TextField from 'material-ui/TextField';
 import { NavLink } from 'react-router-dom';
-import { transaction } from '../../service/TransactionService';
+import { loadmoney, getAmountDetails } from '../../service/TransactionService';
 import Navigation from "../common/navbar";
 
 import { getuser } from '../../service/jwtdecode';
@@ -26,14 +26,41 @@ export default class index extends PureComponent {
   init = async () => {
     let getuserData = await getuser();
     await this.setState({ user: getuserData.data })
-    console.log(this.state)
+    await this.amountDetails()
   }
 
-  LoadMoney = () => {
+  amountDetails = async () => {
+    const { user: { mobile } } = this.state;
+    try {
+      let amountDetails = await getAmountDetails({ mobileNo: mobile })
+      if (amountDetails.data.response) {
+        let _d = amountDetails.data.response;
+        await this.setState({ amount: _d.amount })
+      } else {
+        await this.setState({ amount: 0 })
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
 
+  LoadMoney = async () => {
+    const { amount, user: { mobile } } = this.state;
+    if (amount !== '' && mobile !== '') {
+      let r = await loadmoney({
+        mobileNo: mobile,
+        amount: amount,
+      });
+      console.log(r)
+    } else {
+      alert("Fill all Fields")
+    }
   }
 
   render() {
+    const { amount } = this.state
+    console.log(amount)
     return (
       <div>
         <MuiThemeProvider>
@@ -47,7 +74,7 @@ export default class index extends PureComponent {
             <TextField
               hintText="Enter Amount"
               floatingLabelText="Amount"
-              onChange={(event, newValue) => this.setState({ amount: newValue })}
+              onChange={(event, newValue) => this.setState({ amount: (+newValue) + (+amount) })}
             />
             <br />
             <RaisedButton label="Submit" primary={true} style={style} onClick={(event) => this.LoadMoney(event)} />

@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 import './transaction.css';
 import { NavLink } from 'react-router-dom';
-import { transaction } from '../../service/TransactionService';
+import { sendmoney, getAllUser, getAmountDetails, loadmoney } from '../../service/TransactionService';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
@@ -16,8 +16,8 @@ export default class index extends PureComponent {
     super(props);
     this.state = {
       selected: '',
-      users: [{ mobile: "9791329930" }],
-      amount: '',
+      users: [],
+      amount: 0,
     }
   }
   componentDidMount() {
@@ -27,20 +27,66 @@ export default class index extends PureComponent {
 
   init = async () => {
     let getuserData = await getuser();
-    await this.setState({ user: getuserData.data })
-    console.log(this.state)
+    let getAllusers = await getAllUser();
+
+    console.log(getAllusers)
+    await this.setState({ user: getuserData.data, users: getAllusers.data.response })
   }
 
+  amountDetails = async () => {
+    const { selected } = this.state;
+    try {
+      let amountDetails = await getAmountDetails({ mobileNo: selected })
+      if (amountDetails.data.response) {
+        let _d = amountDetails.data.response;
+        await this.setState({ _ramount: _d.amount })
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
 
   _onSelect = async (i) => {
     const { users } = this.state;
     await this.setState({
       selected: users[i].mobile
     })
+    await this.amountDetails()
   }
 
-  SendMoney = () => {
+  LoadMoney = async () => {
+    const { _ramount, amount, selected, user: { mobile } } = this.state;
+    if (amount !== '' && mobile !== '') {
+      let r = await loadmoney({
+        mobileNo: selected,
+        amount: (+amount) + (+_ramount),
+      });
+      alert(r.data.message)
+    } else {
+      alert("Fill all Fields")
+    }
+  }
 
+
+
+  SendMoney = async () => {
+    const { amount, selected, user: { mobile } } = this.state;
+    if (amount !== '' && selected !== '' && mobile !== '') {
+
+      let r = await sendmoney({
+        sender: mobile,
+        recipient: selected,
+        amount: amount,
+      });
+      if (r.data) {
+        await this.LoadMoney()
+      }
+      console.log(r)
+    } else {
+      alert("Fill all Fields")
+    }
+    //await sendmoney(data)
   }
 
 
